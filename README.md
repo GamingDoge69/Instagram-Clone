@@ -30,7 +30,7 @@ The following **optional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://media0.giphy.com/media/BZgJYcNE7y6Bvg8NwI/giphy.gif?cid=790b7611e732030fc471c33d7a79dae986232e2fe407233b&rid=giphy.gif&ct=g' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<iframe src="https://giphy.com/embed/BZgJYcNE7y6Bvg8NwI" width="230" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/BZgJYcNE7y6Bvg8NwI">via GIPHY</a></p>
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
