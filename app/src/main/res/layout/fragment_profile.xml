@@ -1,14 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ProfileFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="User"
+            type="com.parse.ParseUser">
+        </variable>
+    </data>
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:context=".ProfileFragment"
+        android:background="@color/white">
 
-</FrameLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_margin="16dp"
+                android:id="@+id/ivProfilePicture"
+                getUserProfileDrawable="@{User}"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/imageViewRounded"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                tools:src="@tools:sample/avatars"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{User.username}"
+                android:textColor="@color/primaryText"
+                android:textSize="16sp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="38dp"
+                tools:text="@tools:sample/first_names"
+                android:layout_toEndOf="@id/ivProfilePicture"
+                />
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/ivProfilePicture"
+                android:id="@+id/swipeRefresh">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/rvPosts"
+                    />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        </RelativeLayout>
+    </FrameLayout>
+</layout>

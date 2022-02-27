@@ -13,39 +13,57 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp">
 
-        <ImageView
-            android:id="@+id/ivProfilePicture"
-            getUserProfileDrawable="@{Post.user}"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:adjustViewBounds="true"
-            android:background="@drawable/circle_crop"
-            android:gravity="center"
-            tools:src="@tools:sample/avatars" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/profileInfoHolder"
+            profileLauncher="@{Post.user}">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivProfilePicture"
+                getUserProfileDrawable="@{Post.user}"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:shapeAppearanceOverlay="@style/imageViewRounded"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:background="@android:color/transparent"
+                tools:src="@tools:sample/avatars"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvUsername"
+                android:textSize="16sp"
+                android:layout_toEndOf="@id/ivProfilePicture"
+                android:text="@{Post.user.username}"
+                android:textColor="@color/primaryText"
+                tools:text="@string/app_name"
+                android:layout_margin="8dp" />
+        </RelativeLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvUsername"
-            android:textSize="16sp"
-            android:layout_toEndOf="@id/ivProfilePicture"
-            android:text="@{Post.user.username}"
-            android:textColor="@color/primaryText"
+            android:id="@+id/tvRelativeTime"
+            android:textSize="12sp"
+            setRelativeTimeText="@{Post.createdAt}"
+            android:textColor="@color/secondaryText"
+            android:layout_alignParentEnd="true"
             tools:text="@string/app_name"
-            android:layout_margin="8dp"/>
+            android:layout_margin="12dp"/>
 
         <ImageView
+            android:id="@+id/ivPhoto"
+            parseFileToDrawable="@{Post.image}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/ivPhoto"
-            tools:src="@tools:sample/avatars"
-            android:adjustViewBounds="true"
+            android:layout_below="@+id/profileInfoHolder"
             android:layout_centerInParent="true"
-            android:layout_centerHorizontal="true"
-            parseFileToDrawable="@{Post.image}"
-            android:layout_below="@+id/tvUsername"/>
+            android:adjustViewBounds="true"
+            tools:src="@tools:sample/avatars" />
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

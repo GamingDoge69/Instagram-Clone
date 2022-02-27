@@ -6,34 +6,36 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.instagram.adapters.MainActivityPagerAdapter;
 import com.example.instagram.adapters.MainFeedAdapter;
 import com.example.instagram.databinding.FragmentMainFeedBinding;
+import com.example.instagram.interfaces.ScrollEventListener;
 import com.example.instagram.models.Post;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
+import com.example.instagram.models.PostDataSourceFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MainFeedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainFeedFragment extends Fragment {
+public class MainFeedFragment extends Fragment implements ScrollEventListener {
+    private final static int NEW_POSTS_REQUEST_LIMIT = 20;
     private final static String TAG = "MainFeedFragment";
     FragmentMainFeedBinding binding;
     MainFeedAdapter adapter;
-    List<Post> posts = new ArrayList<>();
+    LiveData<PagedList<Post>> posts;
 
     private Context backupContext;
     @Nullable
@@ -78,30 +80,43 @@ public class MainFeedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         binding = FragmentMainFeedBinding.inflate(inflater, container, false);
-        adapter = new MainFeedAdapter(posts, getContext());
+
+        adapter = new MainFeedAdapter(getContext());
         binding.rvPosts.setAdapter(adapter);
         binding.rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        queryPosts();
+
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setPageSize(NEW_POSTS_REQUEST_LIMIT)
+                .setInitialLoadSizeHint(NEW_POSTS_REQUEST_LIMIT)
+                .build();
+        PostDataSourceFactory factory = new PostDataSourceFactory(this);
+        posts = new LivePagedListBuilder<>(factory, config).build();
+        posts.observe(getViewLifecycleOwner(), new Observer<PagedList<Post>>() {
+            @Override
+            public void onChanged(PagedList<Post> posts) {
+                adapter.submitList(posts);
+                binding.swipeRefresh.setRefreshing(false);
+            }
+        });
+
+        binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                factory.postLiveData.getValue().invalidate();
+            }
+        });
 
         return binding.getRoot();
     }
 
-    private void queryPosts() {
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        query.include(Post.KEY_USER);
-        query.addDescendingOrder(Post.KEY_CREATED_AT);
-        query.findInBackground(new FindCallback<Post>() {
+    @Override
+    public void scrollToNewPosition(int position) {
+        binding.rvPosts.post(new Runnable() {
             @Override
-            public void done(List<Post> posts, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "done: ", e);
-                    return;
-                }
-                MainFeedFragment.this.posts.addAll(posts);
-                adapter.notifyItemRangeInserted(0, posts.size());
+            public void run() {
+                binding.rvPosts.scrollToPosition(0);
             }
         });
     }

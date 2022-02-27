@@ -1,8 +1,10 @@
 package com.example.instagram;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
@@ -14,16 +16,19 @@ import android.widget.Toast;
 
 import com.example.instagram.adapters.MainActivityPagerAdapter;
 import com.example.instagram.databinding.ActivityMainBinding;
+import com.example.instagram.interfaces.ProfileViewRequestListener;
 import com.google.android.material.navigation.NavigationBarView;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ProfileViewRequestListener {
     private final static String TAG = "MainActivity";
 
     ActivityMainBinding binding;
     MainActivityPagerAdapter mainActivityPagerAdapter;
+    FragmentManager fragmentManager;
+    private static ProfileViewRequestListener nullableProfileViewRequestListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
         binding.pager.setAdapter(mainActivityPagerAdapter);
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        fragmentManager = getSupportFragmentManager();
+
+        nullableProfileViewRequestListener = this;
 
 
         binding.pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -57,17 +66,19 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                fragmentManager.popBackStack();
+                boolean smoothScrollEnabled = fragmentManager.getFragments().size() <= MainActivityPagerAdapter.MAIN_ACTIVITY_SCREEN_COUNT;
                 int id = item.getItemId();
                 if (id == R.id.home) {
-                    binding.pager.setCurrentItem(0, true);
+                    binding.pager.setCurrentItem(0, smoothScrollEnabled);
                     return true;
                 }
                 else if (id == R.id.create) {
-                    binding.pager.setCurrentItem(1, true);
+                    binding.pager.setCurrentItem(1, smoothScrollEnabled);
                     return true;
                 }
                 else if (id == R.id.profile) {
-                    binding.pager.setCurrentItem(2, true);
+                    binding.pager.setCurrentItem(2, smoothScrollEnabled);
                     return true;
                 }
                 return false;
@@ -104,5 +115,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Nullable
+    public static ProfileViewRequestListener tryToGetProfileLauncher() {
+        return nullableProfileViewRequestListener;
+    }
+
+    @Override
+    public void viewProfile(ParseUser user) {
+        if (user.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
+            binding.bottomNavigation.setSelectedItemId(R.id.profile);
+            fragmentManager.popBackStack();
+            return;
+        }
+        fragmentManager
+                .beginTransaction()
+                .add(binding.mainFragmentHolder.getId(), ProfileFragment.newInstance(user))
+                .addToBackStack(user.getObjectId())
+                .commit();
     }
 }

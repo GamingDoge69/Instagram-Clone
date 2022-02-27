@@ -9,11 +9,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.example.instagram.CreatePostFragment;
 import com.example.instagram.MainFeedFragment;
 import com.example.instagram.ProfileFragment;
+import com.parse.ParseUser;
 
 import java.util.InputMismatchException;
 
 public class MainActivityPagerAdapter extends FragmentStateAdapter {
-    private final static int MAIN_ACTIVITY_SCREEN_COUNT = 3;
+    public final static int MAIN_ACTIVITY_SCREEN_COUNT = 3;
 
     public MainActivityPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
@@ -30,7 +31,7 @@ public class MainActivityPagerAdapter extends FragmentStateAdapter {
             case 1:
                 return CreatePostFragment.newInstance();
             case 2:
-                return ProfileFragment.newInstance();
+                return ProfileFragment.newInstance(ParseUser.getCurrentUser());
             default:
                 throw new InputMismatchException("Position value for Main Activity View Pager Invalid");
         }
