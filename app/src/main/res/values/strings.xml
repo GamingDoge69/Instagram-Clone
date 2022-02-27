@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Instagram</string>
+    <string name="login_button_text">Login</string>
+    <string name="username_text_input_hint">Username</string>
+    <string name="password_text_input_hint">Password</string>
+    <string name="post_description_text_input_hint">Description</string>
+    <string name="picture_request_button_text">Take Picture</string>
+    <string name="submit_button_text">Submit</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="logout_menu_item_text">Logout</string>
+    <string name="sign_up_button_text">Sign Up</string>
+</resources>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".CreatePostFragment">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="32dp"
+                    android:adjustViewBounds="true"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/tilDescription"
+                    android:id="@+id/ivPhoto"
+                    tools:src="@tools:sample/avatars"
+                    />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tilDescription"
+                    android:layout_margin="16dp"
+                    android:layout_above="@id/btnTakePicture"
+                    android:hint="@string/post_description_text_input_hint">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/tietDescription"
+                        android:inputType="text"
+                        app:placeholderTextColor="@color/black"
+                        app:hintTextColor="@color/black"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnTakePicture"
+                    android:layout_margin="16dp"
+                    android:text="@string/picture_request_button_text"
+                    android:layout_above="@id/btnSubmit"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:id="@+id/btnSubmit"
+                    android:text="@string/submit_button_text"
+                    />
+                <ProgressBar
+                    android:id="@+id/pbLoading"
+                    android:visibility="invisible"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+    </FrameLayout>
+</layout>
